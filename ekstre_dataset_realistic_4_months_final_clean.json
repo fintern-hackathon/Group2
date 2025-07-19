@@ -1,0 +1,554 @@
+[
+    {
+        "income": 30000.0,
+        "expenses_summary": {
+            "food": 300.4,
+            "transport": 99.9,
+            "bills": 654.46,
+            "entertainment": 261.61,
+            "health": 495.41,
+            "clothing": 0.0
+        },
+        "date": "2025-01-01"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 270.03,
+            "transport": 218.56,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-02"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 332.83,
+            "transport": 180.89,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-03"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 297.08,
+            "transport": 193.79,
+            "entertainment": 257.81,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-04"
+    },
+    {
+        "income": 3000.0,
+        "expenses_summary": {
+            "food": 294.93,
+            "transport": 99.36,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-05"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 285.73,
+            "transport": 122.1,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-06"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 351.53,
+            "transport": 208.61,
+            "entertainment": 79.12,
+            "health": 147.42,
+            "clothing": 0.0
+        },
+        "date": "2025-01-07"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 362.66,
+            "transport": 192.06,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 466.84
+        },
+        "date": "2025-01-08"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 321.68,
+            "transport": 203.21,
+            "entertainment": 76.6,
+            "health": 0.0,
+            "clothing": 385.11
+        },
+        "date": "2025-01-09"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 403.59,
+            "transport": 174.65,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 964.54
+        },
+        "date": "2025-01-10"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 273.63,
+            "transport": 166.67,
+            "entertainment": 0.0,
+            "health": 67.01,
+            "clothing": 0.0
+        },
+        "date": "2025-01-11"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 370.38,
+            "transport": 177.67,
+            "entertainment": 0.0,
+            "health": 193.11,
+            "clothing": 0.0
+        },
+        "date": "2025-01-12"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 385.09,
+            "transport": 232.81,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 504.25
+        },
+        "date": "2025-01-13"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 397.05,
+            "transport": 172.48,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-14"
+    },
+    {
+        "income": 1000.0,
+        "expenses_summary": {
+            "food": 426.31,
+            "transport": 173.44,
+            "entertainment": 0.0,
+            "health": 157.29,
+            "clothing": 0.0
+        },
+        "date": "2025-01-15"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 365.9,
+            "transport": 124.68,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-16"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 413.63,
+            "transport": 126.86,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-17"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 391.48,
+            "transport": 147.17,
+            "entertainment": 235.06,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-18"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 354.57,
+            "transport": 236.69,
+            "entertainment": 124.52,
+            "health": 296.97,
+            "clothing": 471.21
+        },
+        "date": "2025-01-19"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 336.68,
+            "transport": 132.13,
+            "entertainment": 245.01,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-20"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 469.33,
+            "transport": 137.72,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 355.93
+        },
+        "date": "2025-01-21"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 402.1,
+            "transport": 122.43,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-22"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 473.14,
+            "transport": 194.79,
+            "entertainment": 0.0,
+            "health": 248.49,
+            "clothing": 0.0
+        },
+        "date": "2025-01-23"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 424.36,
+            "transport": 199.78,
+            "entertainment": 0.0,
+            "health": 391.98,
+            "clothing": 0.0
+        },
+        "date": "2025-01-24"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 610.76,
+            "transport": 297.36,
+            "entertainment": 159.04,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-25"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 711.44,
+            "transport": 334.55,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 352.75
+        },
+        "date": "2025-01-26"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 632.72,
+            "transport": 348.32,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-27"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 609.6,
+            "transport": 293.07,
+            "entertainment": 233.92,
+            "health": 237.06,
+            "clothing": 372.97
+        },
+        "date": "2025-01-28"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 511.69,
+            "transport": 312.03,
+            "entertainment": 207.36,
+            "health": 0.0,
+            "clothing": 199.88
+        },
+        "date": "2025-01-29"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 593.61,
+            "transport": 341.09,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-01-30"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 595.24,
+            "transport": 275.65,
+            "entertainment": 0.0,
+            "health": 395.22,
+            "clothing": 301.06
+        },
+        "date": "2025-01-31"
+    },
+    {
+        "income": 30000.0,
+        "expenses_summary": {
+            "food": 689.16,
+            "transport": 345.75,
+            "bills": 921.32,
+            "entertainment": 0.0,
+            "health": 130.4,
+            "clothing": 0.0
+        },
+        "date": "2025-02-01"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 614.28,
+            "transport": 365.26,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-02"
+    },
+    {
+        "income": 1000.0,
+        "expenses_summary": {
+            "food": 544.84,
+            "transport": 377.3,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 577.53
+        },
+        "date": "2025-02-03"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 645.53,
+            "transport": 308.99,
+            "entertainment": 0.0,
+            "health": 140.39,
+            "clothing": 0.0
+        },
+        "date": "2025-02-04"
+    },
+    {
+        "income": 500.0,
+        "expenses_summary": {
+            "food": 602.63,
+            "transport": 203.81,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-05"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1348.18,
+            "transport": 434.96,
+            "entertainment": 180.37,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-06"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1058.77,
+            "transport": 742.2,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 397.59
+        },
+        "date": "2025-02-07"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1424.27,
+            "transport": 352.54,
+            "entertainment": 209.86,
+            "health": 187.11,
+            "clothing": 0.0
+        },
+        "date": "2025-02-08"
+    },
+    {
+        "income": 1000.0,
+        "expenses_summary": {
+            "food": 1259.51,
+            "transport": 711.21,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 926.66
+        },
+        "date": "2025-02-09"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1390.28,
+            "transport": 445.64,
+            "entertainment": 0.0,
+            "health": 299.2,
+            "clothing": 0.0
+        },
+        "date": "2025-02-10"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1376.81,
+            "transport": 464.34,
+            "entertainment": 262.23,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-11"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1349.33,
+            "transport": 765.63,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 456.63
+        },
+        "date": "2025-02-12"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1240.6,
+            "transport": 540.76,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-13"
+    },
+    {
+        "income": 3000.0,
+        "expenses_summary": {
+            "food": 1330.71,
+            "transport": 699.61,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-14"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1436.84,
+            "transport": 554.27,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-15"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1458.9,
+            "transport": 730.86,
+            "entertainment": 0.0,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-16"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1405.42,
+            "transport": 564.03,
+            "entertainment": 76.93,
+            "health": 0.0,
+            "clothing": 0.0
+        },
+        "date": "2025-02-17"
+    },
+    {
+        "income": 0.0,
+        "expenses_summary": {
+            "food": 1983.35,
+            "transport": 937.1,
+            "entertainment": 104.18,
+            "health": 0.0,
+            "clothing": 994.86
+        },
+        "date": "2025-02-18"
+    },
+    {
+        "income": 1000.0,
+        "expenses_summary": {
+            "food": 1875.61,
+            "transport": 873.12,
+            "entertainment": 0.0,
+            "health": 106.64,
+            "clothing": 0.0
+        },
+        "date": "2025-02-19"
+    }
+]
