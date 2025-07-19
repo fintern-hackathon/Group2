@@ -3,6 +3,7 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { CampaignCard } from '@/components/CampaignCard';
 import { ProfileHeader } from '@/components/ProfileHeader';
 import { TopBar } from '@/components/TopBar';
 import { TreeProgress } from '@/components/TreeProgress';
@@ -10,8 +11,8 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 export default function CampaignsScreen() {
   const [activeTab, setActiveTab] = useState('campaigns');
-  const [financialScore, setFinancialScore] = useState(750);
-  
+  const [financialScore, setFinancialScore] = useState(75);
+
   const backgroundColor = useThemeColor({}, 'background');
 
   const tabs = [
@@ -29,29 +30,35 @@ export default function CampaignsScreen() {
   };
 
   const handleScoreChange = () => {
-    // Finansal skoru rastgele değiştir (0-1000 arası)
     setFinancialScore(Math.floor(Math.random() * 1000) + 1);
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
-      <TopBar title="FinTree" showBackButton={true} />
-      
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Profile Header */}
-        <ProfileHeader userName="Alican" greeting="İyi günler," />
-        
-        {/* Progress Section with Tree */}
+      <TopBar title="FinTree" showBackButton />
+
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        {/* Profile Header - Top */}
+        <View style={styles.profileSection}>
+          <ProfileHeader userName="Alican" greeting="İyi günler," />
+        </View>
+
+        {/* Tree Progress - Center */}
         <View style={styles.progressSection}>
           <TouchableOpacity onPress={handleScoreChange} style={styles.treeButton}>
-            <TreeProgress 
-              financialScore={financialScore} 
-              size={320}
-            />
+            <TreeProgress financialScore={financialScore} size={320} />
           </TouchableOpacity>
         </View>
+
+        {/* Campaign Card - Bottom */}
+        <View style={styles.campaignSection}>
+          <CampaignCard
+            onCancel={() => Alert.alert('Geri', 'info')}
+            onConfirm={() => Alert.alert('Tamam', 'info')}
+          />
+        </View>
       </ScrollView>
-      
+
       <BottomNavigation tabs={tabs} onTabPress={handleTabPress} />
     </SafeAreaView>
   );
@@ -60,15 +67,28 @@ export default function CampaignsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
   },
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   progressSection: {
     alignItems: 'center',
-    paddingVertical: 60,
+    flex: 1,
+    justifyContent: 'center',
   },
   treeButton: {
     alignItems: 'center',
   },
-}); 
+  profileSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+  campaignSection: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+  },
+});

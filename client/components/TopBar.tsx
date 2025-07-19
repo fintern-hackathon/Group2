@@ -1,49 +1,29 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
-import { StatusBar, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from './ThemedText';
 
 interface TopBarProps {
-  title?: string;
+  title: string;
   showBackButton?: boolean;
   onBackPress?: () => void;
-  rightComponent?: React.ReactNode;
 }
 
-export function TopBar({ 
-  title = 'Kampanyalar', 
-  showBackButton = false,
-  onBackPress,
-  rightComponent 
-}: TopBarProps) {
+export function TopBar({ title, showBackButton = false, onBackPress }: TopBarProps) {
   const primaryColor = useThemeColor({}, 'primary');
-  const textColor = useThemeColor({}, 'white');
-  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { backgroundColor: primaryColor, paddingTop: insets.top }]}>
-      <StatusBar barStyle="light-content" backgroundColor={primaryColor} />
-      <View style={styles.content}>
-        <View style={styles.leftSection}>
-          {showBackButton && (
-            <ThemedText style={[styles.backButton, { color: textColor }]} onPress={onBackPress}>
-              ←
-            </ThemedText>
-          )}
-        </View>
-        
-        <View style={styles.centerSection}>
-          <ThemedText style={[styles.title, { color: textColor }]}>
-            {title}
-          </ThemedText>
-        </View>
-        
-        <View style={styles.rightSection}>
-          {rightComponent}
-        </View>
+    <SafeAreaView style={[styles.container, { backgroundColor: primaryColor }]} edges={['top']}>
+      <View style={[styles.topBar, { backgroundColor: primaryColor }]}>
+        {showBackButton && (
+          <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+            <ThemedText style={styles.backButtonText}>←</ThemedText>
+          </TouchableOpacity>
+        )}
+        <ThemedText style={styles.title}>{title}</ThemedText>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -51,33 +31,27 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
-  content: {
+  topBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    minHeight: 46,
-  },
-  leftSection: {
-    flex: 1,
-    alignItems: 'flex-start',
-  },
-  centerSection: {
-    flex: 2,
-    alignItems: 'center',
-  },
-  rightSection: {
-    flex: 1,
-    alignItems: 'flex-end',
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: '700',
-    lineHeight: 18,
+    paddingVertical: 12, // Reduced height
+    minHeight: 44, // Reduced minimum height
   },
   backButton: {
+    position: 'absolute',
+    left: 16,
+    zIndex: 1,
+  },
+  backButtonText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: '600',
+  },
+  title: {
     fontSize: 18,
     fontWeight: '600',
+    color: 'white',
   },
 }); 

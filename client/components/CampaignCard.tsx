@@ -1,95 +1,77 @@
-import { useThemeColor } from '@/hooks/useThemeColor';
-import { Image } from 'expo-image';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from './ThemedText';
 
 interface CampaignCardProps {
-  title: string;
-  description?: string;
-  imageUrl?: string;
-  onPress?: () => void;
-  width?: number;
-  height?: number;
+  onConfirm?: () => void;
+  onCancel?: () => void;
 }
 
-export function CampaignCard({ 
-  title, 
-  description, 
-  imageUrl, 
-  onPress,
-  width = 258,
-  height = 378
-}: CampaignCardProps) {
-  const backgroundColor = useThemeColor({}, 'background');
-  const borderColor = useThemeColor({}, 'border');
-  const shadowColor = useThemeColor({}, 'shadow');
-
+export function CampaignCard({ onConfirm, onCancel }: CampaignCardProps) {
   return (
-    <TouchableOpacity 
-      style={[
-        styles.container, 
-        { 
-          backgroundColor, 
-          borderColor,
-          shadowColor,
-          width,
-          height
-        }
-      ]}
-      onPress={onPress}
-      activeOpacity={0.8}
-    >
-      <Image
-        source={imageUrl ? { uri: imageUrl } : require('@/assets/images/react-logo.png')}
-        style={styles.image}
-        contentFit="cover"
-      />
-      <View style={styles.content}>
-        <ThemedText style={styles.title} numberOfLines={2}>
-          {title}
-        </ThemedText>
-        {description && (
-          <ThemedText style={styles.description} numberOfLines={3}>
-            {description}
+    <View style={styles.card}>
+      <View style={styles.contentRow}>
+        <View style={{ flex: 1 }}>
+          <ThemedText style={styles.text}>
+            Lorem ipsum dolor sit amet consectetur. Sedet pellentesque nisi at sed massa massa tellus ut mattis. Elementum viverra sagittis elementum.
           </ThemedText>
-        )}
+        </View>
+        <Image
+          source={require('@/assets/images/bunny.png')}
+          style={styles.bunny}
+          resizeMode="contain"
+        />
       </View>
-    </TouchableOpacity>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity onPress={onCancel}>
+          <ThemedText style={styles.cancel}>Geri</ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onConfirm}>
+          <ThemedText style={styles.confirm}>Tamam</ThemedText>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderRadius: 12,
-    borderWidth: 1,
-    overflow: 'hidden',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+  card: {
+    marginHorizontal: 16,
+    marginTop: 24,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
   },
-  image: {
-    width: '100%',
-    height: '70%',
+  contentRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
   },
-  content: {
-    padding: 16,
-    flex: 1,
+  text: {
+    fontSize: 13,
+    color: '#333',
+    marginRight: 12,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
-    lineHeight: 20,
-    marginBottom: 8,
+  bunny: {
+    width: 50,
+    height: 50,
   },
-  description: {
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cancel: {
     fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 18,
-    opacity: 0.8,
+    color: '#666',
   },
-}); 
+  confirm: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0057B8',
+  },
+});
