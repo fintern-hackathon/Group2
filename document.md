@@ -1,446 +1,304 @@
-# 🌳 FinTree API Documentation
+# 🌳 Fintree App - API Dokümantasyonu
 
-## 📋 Proje Hakkında
-
-FinTree, kullanıcıların finansal harcamalarını takip etmelerine ve akıllı öneriler almalarına olanak sağlayan bir REST API'dir. 
-
-### ⚡ Hızlı Başlangıç
-
-```bash
-# Projeyi klonla
-git clone <repository-url>
-cd fintree-app
-
-# Tek satırla kurulum
-python setup.py setup
-
-# Sunucuyu başlat
-venv/Scripts/python working_main.py  # Windows
-# veya
-venv/bin/python working_main.py      # Linux/Mac
-
-# API dokümantasyonu
-http://localhost:8002/docs
-```
-
-### 🗑️ Tek Satırla Kaldırma
-
-```bash
-python setup.py remove
-```
+## 📋 İçindekiler
+- [Genel Bilgiler](#genel-bilgiler)
+- [Kurulum ve Çalıştırma](#kurulum-ve-çalıştırma)  
+- [Transactions API](#transactions-api)
+- [Analytics API](#analytics-api)
+- [Uygulamayı Kaldırma](#uygulamayı-kaldırma)
 
 ---
 
-## 🛠️ Teknoloji Stack
+## 🎯 Genel Bilgiler
 
-- **Backend**: FastAPI (Python)
-- **Database**: SQLite + SQLAlchemy ORM (Async)
+**Fintree App**, kullanıcıların finansal durumlarına göre sanal bir ağacın büyümesini veya solmasını gözlemleyebildikleri gamified finans uygulamasıdır.
+
+### 🏗️ Teknoloji Stack
+- **Backend**: FastAPI
+- **Database**: SQLite (fintree.db)
+- **ORM**: SQLAlchemy (Async)
 - **AI**: Google Gemini API
-- **Validation**: Pydantic
-- **Architecture**: Clean Architecture + Dependency Injection
+- **Port**: 8002
+
+### 🔗 Base URL
+```
+http://localhost:8002/api/v1
+```
 
 ---
 
-## 📊 API Endpoints
+## 🚀 Kurulum ve Çalıştırma
 
-### Base URL: `http://localhost:8002/api/v1`
-
----
-
-## 💰 Transactions Endpoints
-
-### 1. 📝 Daily Transaction Ekleme
-
-**Endpoint:** `POST /transactions/{user_id}/daily`
-
-**Açıklama:** Kullanıcının günlük gelir ve harcama kategorilerini kaydet
-
-**Request Model:**
-```json
-{
-  "date": "2025-01-20",
-  "income": 5000.0,
-  "food": 150.0,
-  "transport": 80.0,
-  "bills": 200.0,
-  "entertainment": 100.0,
-  "health": 50.0,
-  "clothing": 75.0
-}
-```
-
-**Response Model:**
-```json
-{
-  "transaction_id": "550e8400-e29b-41d4-a716-446655440000",
-  "total_expenses": 655.0,
-  "net_balance": 4345.0,
-  "new_total_score": 87.5,
-  "tree_level": 9,
-  "message": "Transaction recorded successfully"
-}
-```
-
-**Örnek İstek:**
+### 1. Bağımlılıkları Yükle
 ```bash
-curl -X POST "http://localhost:8002/api/v1/transactions/7f3c989b-221e-47c3-b502-903199b39ad4/daily" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "date": "2025-01-20",
-    "income": 5000,
-    "food": 150,
-    "transport": 80,
-    "bills": 200,
-    "entertainment": 100,
-    "health": 50,
-    "clothing": 75
-  }'
+pip install -r requirements.txt
 ```
 
-**Çalışma Mantığı:**
-1. ✅ Tarih kontrolü (aynı günde birden fazla transaction yasak)
-2. ✅ Otomatik hesaplama: `total_expenses` = tüm harcama kategorilerinin toplamı
-3. ✅ Net balance: `income - total_expenses`
-4. ✅ **Smart Scoring Algorithm** ile skor güncelleme:
-   - Health harcaması: 0.3x impact (bonus)
-   - Entertainment: 1.5x impact (penalty)
-   - Bills: 0.5x impact (mecburi gider)
-   - **Momentum sistemi**: Max 5 puan günlük değişim
-5. ✅ Tree level güncelleme (1-10 seviye)
-6. ✅ Database'e kayıt
-
----
-
-## 📊 Analytics Endpoints
-
-### 1. 🎯 User Score - Genel Durum
-
-**Endpoint:** `GET /analytics/{user_id}/score`
-
-**Açıklama:** Kullanıcının mevcut finansal skorunu ve genel durumunu getir
-
-**Response Model:**
-```json
-{
-  "user_id": "7f3c989b-221e-47c3-b502-903199b39ad4",
-  "total_score": 87.5,
-  "days_in_system": 45,
-  "total_income": 150000.0,
-  "total_expenses": 120000.0,
-  "savings_rate": 0.2
-}
-```
-
-**Örnek İstek:**
+### 2. Sunucuyu Başlat
 ```bash
-curl "http://localhost:8002/api/v1/analytics/7f3c989b-221e-47c3-b502-903199b39ad4/score"
-```
-
-**Çalışma Mantığı:**
-1. ✅ UserTotal tablosundan mevcut durumu çek
-2. ✅ Savings rate hesapla: `(income - expenses) / income`
-3. ✅ Real-time hesaplama (cache yok)
-
-**Score Hesaplama Algoritması:**
-```
-Total Score = 50 (base) + 
-  Smart Savings Score (35 puan) +
-  Smart Category Score (35 puan) +
-  Income Stability (20 puan) +
-  Consistency Bonus (10 puan)
-
-Momentum System:
-final_score = (current_score × 0.80) + (new_score × 0.20)
-```
-
----
-
-### 2. 📅 Monthly Analytics - Aylık Özet
-
-**Endpoint:** `GET /analytics/{user_id}/monthly/{year}/{month}`
-
-**Açıklama:** Belirtilen ay için detaylı finansal analiz
-
-**Response Model:**
-```json
-{
-  "year": 2025,
-  "month": 1,
-  "tree_level": 8,
-  "score": 85.0,
-  "total_income": 25000.0,
-  "total_expenses": 18500.0,
-  "savings_rate": 0.26,
-  "category_breakdown": {
-    "food": 5200.0,
-    "transport": 1800.0,
-    "bills": 3500.0,
-    "entertainment": 2200.0,
-    "health": 800.0,
-    "clothing": 5000.0
-  }
-}
-```
-
-**Örnek İstek:**
-```bash
-curl "http://localhost:8002/api/v1/analytics/7f3c989b-221e-47c3-b502-903199b39ad4/monthly/2025/1"
-```
-
-**Çalışma Mantığı:**
-1. ✅ Belirtilen aya ait tüm daily_transactions'ları getir
-2. ✅ SQL aggregation ile toplamları hesapla
-3. ✅ Her kategori için breakdown oluştur
-4. ✅ Monthly savings rate hesapla
-5. ✅ 404 Error eğer o ayda transaction yoksa
-
----
-
-## 🧮 Smart Scoring Algorithm
-
-### Kategori Ağırlıkları:
-
-| Kategori | Impact Multiplier | Açıklama |
-|----------|------------------|----------|
-| 🏥 **Health** | **0.3x** | Sağlık yatırımı - az cezalandırılır |
-| 💡 **Bills** | **0.5x** | Mecburi gider - düşük penalty |
-| 🍕 **Food** | **0.7x** | Temel ihtiyaç |
-| 🚗 **Transport** | **0.8x** | Gerekli ulaşım |
-| 👕 **Clothing** | **1.2x** | İsteğe bağlı |
-| 🎮 **Entertainment** | **1.5x** | Lüks harcama - yüksek penalty |
-
-### Momentum Sistemi:
-- **Previous Score Weight**: 80%
-- **New Impact Weight**: 20%
-- **Max Daily Change**: ±5 puan
-- **Min Daily Change**: ±0.3 puan
-
-**Örnek:**
-```
-Mevcut Skor: 80.0
-Yeni Hesaplanan: 50.0 (kötü gün)
-Momentum ile Final: 74.0  # Sadece 6 puan düşüş!
-```
-
----
-
-## 🗄️ Database Yapısı
-
-### Users Table
-```sql
-CREATE TABLE users (
-    id VARCHAR(36) PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Daily Transactions Table
-```sql
-CREATE TABLE daily_transactions (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    date DATE NOT NULL,
-    income DECIMAL(12,2) DEFAULT 0.00,
-    food DECIMAL(10,2) DEFAULT 0.00,
-    transport DECIMAL(10,2) DEFAULT 0.00,
-    bills DECIMAL(10,2) DEFAULT 0.00,
-    entertainment DECIMAL(10,2) DEFAULT 0.00,
-    health DECIMAL(10,2) DEFAULT 0.00,
-    clothing DECIMAL(10,2) DEFAULT 0.00,
-    total_expenses DECIMAL(12,2),
-    net_balance DECIMAL(12,2),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-
-### User Totals Table
-```sql
-CREATE TABLE user_totals (
-    user_id VARCHAR(36) PRIMARY KEY,
-    total_income DECIMAL(15,2) DEFAULT 0.00,
-    total_expenses DECIMAL(15,2) DEFAULT 0.00,
-    total_score DECIMAL(5,2) DEFAULT 50.00,
-    tree_level INTEGER DEFAULT 1,
-    days_in_system INTEGER DEFAULT 0,
-    first_transaction_date DATE,
-    last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-
----
-
-## 🚀 Development Setup
-
-### Gereksinimler:
-- Python 3.8+
-- SQLite
-- Internet (Gemini AI için)
-
-### Kurulum:
-```bash
-# Repository'i klonla
-git clone <repo-url>
-cd fintree-app
-
-# Otomatik kurulum
-python setup.py setup
-
-# Manuel kurulum (alternatif)
-python -m venv venv
-venv/Scripts/activate  # Windows
-pip install fastapi uvicorn sqlalchemy aiosqlite pydantic google-generativeai
-
-# Database initialize
-python -c "import asyncio; from app.database.connection import init_db; asyncio.run(init_db())"
-
-# Sample data yükle (opsiyonel)
-python load_data.py
-```
-
-### Sunucuyu Başlat:
-```bash
-# Development server
 python working_main.py
-
-# Production (uvicorn)
-uvicorn working_main:app --host 0.0.0.0 --port 8002 --reload
 ```
 
----
-
-## 🧪 Testing
-
-### Quick Test:
-```bash
-# Health check
-curl http://localhost:8002/api/v1/health
-
-# User score
-curl http://localhost:8002/api/v1/analytics/7f3c989b-221e-47c3-b502-903199b39ad4/score
-
-# Add transaction
-curl -X POST http://localhost:8002/api/v1/transactions/7f3c989b-221e-47c3-b502-903199b39ad4/daily \
-  -H "Content-Type: application/json" \
-  -d '{"date":"2025-01-20","income":5000,"food":150,"entertainment":300}'
-```
-
-### Interactive Testing:
+### 3. API Dokümantasyonu
 - **Swagger UI**: http://localhost:8002/docs
 - **ReDoc**: http://localhost:8002/redoc
 
 ---
 
-## 🔧 Configuration
+## 💳 Transactions API
 
-### Environment Variables:
-```bash
-# .env file
-GEMINI_API_KEY=your_google_gemini_api_key_here
-DATABASE_URL=sqlite:///./fintree.db
+### 📝 Günlük İşlem Ekleme
+
+**Endpoint**: `POST /transactions/{user_id}/daily`
+
+**Açıklama**: Kullanıcı için günlük gelir ve gider verilerini ekler. Bu endpoint aynı zamanda kullanıcının skor hesaplamasını otomatik olarak günceller.
+
+#### 📊 Request Model - DailyTransactionCreate
+```json
+{
+  "date": "2024-01-15",
+  "income": 5000.0,
+  "food": 300.0,
+  "transport": 150.0,
+  "bills": 800.0,
+  "entertainment": 200.0,
+  "health": 100.0,
+  "clothing": 250.0
+}
 ```
 
-### Port Configuration:
-- Default: `8002`
-- Change in `working_main.py`: `uvicorn.run(app, host="0.0.0.0", port=8002)`
-
----
-
-## 📝 Error Handling
-
-### Common Errors:
-
-**500 Internal Server Error:**
-- Database connection issue
-- Missing Gemini API key
-- Invalid date format
-
-**400 Bad Request:**
-- Duplicate transaction for same date
-- Invalid JSON format
-- Missing required fields
-
-**404 Not Found:**
-- User not found
-- No transactions for specified month
-
----
-
-## 🎯 API Features
-
-### ✅ Implemented:
-- ✅ Smart Category Scoring
-- ✅ Momentum-based Score Updates
-- ✅ Real-time Analytics
-- ✅ Monthly Breakdown
-- ✅ Google Gemini AI Integration
-- ✅ SQLite Database
-- ✅ Async Operations
-- ✅ Input Validation
-- ✅ Error Handling
-- ✅ Swagger Documentation
-
-### 🚧 Future Features:
-- 🔄 Authentication & JWT
-- 🔄 Goal Setting
-- 🔄 Budget Alerts
-- 🔄 Export/Import
-- 🔄 Multiple Currencies
-
----
-
-## 📊 Sample Data
-
-**Test User ID:** `7f3c989b-221e-47c3-b502-903199b39ad4`
-
-Proje 53 günlük gerçek transaction data ile birlikte geliyor:
-- Total Income: 73,500 TL
-- Total Expenses: 70,113 TL
-- Savings Rate: 4.7%
-- Score: 99.0/100
-- Tree Level: 10
-
----
-
-## 🆘 Troubleshooting
-
-**Database Issues:**
-```bash
-# Reset database
-rm fintree.db
-python -c "import asyncio; from app.database.connection import init_db; asyncio.run(init_db())"
+#### 📈 Response Model - DailyTransactionResponse
+```json
+{
+  "transaction_id": "uuid-string",
+  "total_expenses": 1800.0,
+  "net_balance": 3200.0,
+  "new_total_score": 75.5,
+  "tree_level": 3,
+  "message": "İşlem başarıyla eklendi!"
+}
 ```
 
-**Server Not Starting:**
-```bash
-# Check port usage
-netstat -ano | findstr :8002
+#### 🔄 Çalışma Mantığı
+1. **Tarih Kontrolü**: Aynı tarih için işlem var mı kontrol edilir
+2. **Işlem Oluşturma**: Yeni DailyTransaction oluşturulur
+3. **Hesaplama**: Toplam gider ve net balans hesaplanır
+4. **Skor Güncelleme**: Gelişmiş skor algoritması ile toplam skor güncellenir
+5. **Response**: İşlem sonucu ve yeni skor döndürülür
 
-# Kill existing process
-taskkill /PID <process_id> /F
+#### 🧮 Skor Algoritması Özellikleri
+- **Kategori Ağırlıkları**: Sağlık harcamaları (-0.5), eğlence harcamaları (-1.5)
+- **Momentum Smoothing**: Günlük skor değişimi maksimum %20 ile sınırlı
+- **Trend Analizi**: Son 7 günlük trend hesaplanır
+- **Gelir Tabanlı Tolerans**: Yüksek gelirde harcama toleransı artar
+
+#### 📋 Örnek İstek
+```bash
+curl -X POST "http://localhost:8002/api/v1/transactions/user123/daily" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "date": "2024-01-15",
+    "income": 5000.0,
+    "food": 300.0,
+    "transport": 150.0,
+    "bills": 800.0,
+    "entertainment": 200.0,
+    "health": 100.0,
+    "clothing": 250.0
+  }'
 ```
 
-**Dependencies Issues:**
-```bash
-# Reinstall
-pip install --upgrade --force-reinstall fastapi uvicorn sqlalchemy
+#### ✅ Başarılı Response (201)
+```json
+{
+  "transaction_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "total_expenses": 1800.0,
+  "net_balance": 3200.0,
+  "new_total_score": 78.5,
+  "tree_level": 3,
+  "message": "İşlem başarıyla eklendi ve skor güncellendi!"
+}
+```
+
+#### ❌ Hata Response (400)
+```json
+{
+  "detail": "Transaction already exists for this date"
+}
 ```
 
 ---
 
-## 📞 Support
+## 📊 Analytics API
 
-For issues and questions:
-1. Check this documentation first
-2. Review Swagger UI: http://localhost:8002/docs
-3. Check database contents with any SQLite browser
-4. Review server logs for error details
+### 📈 Kullanıcı Skor Durumu
+
+**Endpoint**: `GET /analytics/{user_id}/score`
+
+**Açıklama**: Kullanıcının güncel skor durumunu, toplam gelir/gider bilgilerini ve sistem içinde geçirdiği gün sayısını döndürür.
+
+#### 📊 Response Model - UserScoreResponse
+```json
+{
+  "user_id": "string",
+  "total_score": 0.0,
+  "days_in_system": 0,
+  "total_income": 0.0,
+  "total_expenses": 0.0,
+  "savings_rate": 0.0
+}
+```
+
+#### 🔄 Çalışma Mantığı
+1. **UserTotal Sorgusu**: Kullanıcının toplam verilerini getirir
+2. **Otomatik Oluşturma**: Eğer veri yoksa default UserTotal oluşturur
+3. **Tasarruf Oranı**: `(gelir - gider) / gelir` formülü ile hesaplanır
+4. **Response**: Tüm finansal özet bilgileri döndürülür
+
+#### 📋 Örnek İstek
+```bash
+curl -X GET "http://localhost:8002/api/v1/analytics/user123/score"
+```
+
+#### ✅ Başarılı Response (200)
+```json
+{
+  "user_id": "user123",
+  "total_score": 78.5,
+  "days_in_system": 45,
+  "total_income": 150000.0,
+  "total_expenses": 89500.0,
+  "savings_rate": 0.4033
+}
+```
+
+### 📅 Aylık Özet
+
+**Endpoint**: `GET /analytics/{user_id}/monthly/{year}/{month}`
+
+**Açıklama**: Belirtilen ay için kullanıcının detaylı finansal analizini ve kategori bazında harcama dağılımını döndürür.
+
+#### 📊 Response Model - MonthlyAnalytics
+```json
+{
+  "year": 2024,
+  "month": 1,
+  "tree_level": 3,
+  "score": 78.5,
+  "total_income": 15000.0,
+  "total_expenses": 8500.0,
+  "savings_rate": 0.433,
+  "category_breakdown": {
+    "food": 2500.0,
+    "transport": 1200.0,
+    "bills": 3000.0,
+    "entertainment": 800.0,
+    "health": 500.0,
+    "clothing": 500.0
+  }
+}
+```
+
+#### 🔄 Çalışma Mantığı
+1. **Tarih Filtreleme**: Belirtilen yıl ve ay için işlemler filtrelenir
+2. **Kategori Toplama**: Her harcama kategorisi için toplam hesaplanır
+3. **Skor Hesaplama**: Aylık veriler ile ortalama skor hesaplanır
+4. **Ağaç Seviyesi**: Skor bazında ağaç seviyesi belirlenir
+5. **Response**: Detaylı aylık analiz döndürülür
+
+#### 📋 Örnek İstek
+```bash
+curl -X GET "http://localhost:8002/api/v1/analytics/user123/monthly/2024/1"
+```
+
+#### ✅ Başarılı Response (200)
+```json
+{
+  "year": 2024,
+  "month": 1,
+  "tree_level": 3,
+  "score": 78.5,
+  "total_income": 15000.0,
+  "total_expenses": 8500.0,
+  "savings_rate": 0.433,
+  "category_breakdown": {
+    "food": 2500.0,
+    "transport": 1200.0,
+    "bills": 3000.0,
+    "entertainment": 800.0,
+    "health": 500.0,
+    "clothing": 500.0
+  }
+}
+```
+
+#### ❌ Hata Response (404)
+```json
+{
+  "detail": "No data found for the specified month"
+}
+```
 
 ---
 
-**🎉 Happy Coding! FinTree API ile finansal takip artık çok kolay!**
+## 🗑️ Uygulamayı Kaldırma
 
+### Tek Satırla Kaldırma
+```bash
+python uninstall.py
+```
+
+Bu komut şunları yapar:
+1. ⚠️ Kullanıcıdan onay ister
+2. 🔄 Çalışan Python processlerini durdurur
+3. 📁 Tüm proje klasörünü siler
+4. ✅ Kaldırma işlemini tamamlar
+
+### 🔧 Manuel Kaldırma
+Eğer uninstall.py çalışmazsa:
+1. Çalışan sunucuyu durdurun (Ctrl+C)
+2. Proje klasörünü manuel olarak silin
+
+---
+
+## 📚 Ek Notlar
+
+### 🔐 Authentication
+- Şu anda API'ler user_id parametresi ile çalışır
+- Gerçek production ortamında JWT token kullanılmalıdır
+
+### 💾 Database
+- SQLite database (`fintree.db`) development için GitHub'a dahil edilir
+- Production'da PostgreSQL önerilir
+
+### 🎮 Test Kullanıcısı
+```
+Test User ID: 7f3c989b-221e-47c3-b502-903199b39ad4
+```
+
+### 🔄 API Status Codes
+- **200**: Başarılı GET istekleri
+- **201**: Başarılı POST istekleri (oluşturma)
+- **400**: Yanlış istek formatı
+- **404**: Veri bulunamadı
+- **500**: Sunucu hatası
+
+---
+
+## 🤝 Geliştirme
+
+### Katkıda Bulunma
+1. Repo'yu fork edin
+2. Feature branch oluşturun
+3. Değişikliklerinizi commit edin
+4. Pull request açın
+
+### 🔧 Debugging
+- Sunucu logları: Console output
+- Database browsing: SQLite browser tools
+- API testing: Swagger UI (`/docs`)
+
+---
+
+**Son Güncelleme**: 2024
+**Versiyon**: 1.0.0
