@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers.auth import router as auth_router
 from app.routers.transactions import router as transactions_router
 from app.routers.analytics import router as analytics_router
-from app.routers.ai import router as ai_router
-from app.routers.mcp_ai import router as mcp_ai_router
+from app.routers.mcp_tools import router as mcp_tools_router
+from app.routers.mcp_client import router as mcp_client_router
 from app.database.connection import init_db
 
 # Create FastAPI app
@@ -32,8 +32,8 @@ async def health():
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(transactions_router, prefix="/api/v1/transactions", tags=["transactions"])
 app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["analytics"])
-app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
-app.include_router(mcp_ai_router, prefix="/api/v1/mcp-ai", tags=["mcp-ai"])
+app.include_router(mcp_tools_router, prefix="/api/v1/mcp", tags=["mcp-tools"])
+app.include_router(mcp_client_router, prefix="/api/v1/mcp-client", tags=["mcp-client"])
 
 # Startup event
 @app.on_event("startup")
@@ -43,4 +43,4 @@ async def startup():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8004) 
+    uvicorn.run(app, host="0.0.0.0", port=8006) 

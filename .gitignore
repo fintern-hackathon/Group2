@@ -154,8 +154,3 @@ simple_main.py
 
 # Log files
 *.log
-
-# MCP AI System
-# Keep prompts directory but allow user custom prompts
-!prompts/
-prompts/*.backup
