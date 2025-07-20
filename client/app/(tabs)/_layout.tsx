@@ -27,7 +27,7 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="campaigns"
+        name="index"
         options={{
           title: 'Kampanyalar',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="gift" color={color} />,

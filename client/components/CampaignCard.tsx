@@ -5,15 +5,16 @@ import { ThemedText } from './ThemedText';
 interface CampaignCardProps {
   onConfirm?: () => void;
   onCancel?: () => void;
+  description?: string;
 }
 
-export function CampaignCard({ onConfirm, onCancel }: CampaignCardProps) {
+export function CampaignCard({ onConfirm, onCancel, description }: CampaignCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.contentRow}>
         <View style={styles.textContainer}>
           <ThemedText style={styles.text}>
-            Lorem ipsum dolor sit amet consectetur. Sedet pellentesque nisi at sed massa massa tellus ut mattis. Elementum viverra sagittis elementum.
+            {description || 'Lorem ipsum dolor sit amet consectetur. Sedet pellentesque nisi at sed massa massa tellus ut mattis. Elementum viverra sagittis elementum.'}
           </ThemedText>
         </View>
         <Image

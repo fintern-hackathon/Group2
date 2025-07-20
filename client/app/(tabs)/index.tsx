@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BottomNavigation } from '@/components/BottomNavigation';
@@ -9,9 +9,50 @@ import { TopBar } from '@/components/TopBar';
 import { TreeProgress } from '@/components/TreeProgress';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
-export default function CampaignsScreen() {
+export default function IndexScreen() {
   const [activeTab, setActiveTab] = useState('campaigns');
-  const [financialScore, setFinancialScore] = useState(75);
+  const [financialScore, setFinancialScore] = useState(75); // Varsayılan skor
+  const [suggestion, setSuggestion] = useState('');
+
+  // Skoru backend'den çek
+  useEffect(() => {
+    const fetchScore = async () => {
+      try {
+        const response = await fetch('http://localhost:8004/api/v1/analytics/1/score');
+        if (!response.ok) throw new Error('API error');
+        const data = await response.json();
+        console.log('API response:', data);
+        if (typeof data.total_score !== 'number' || isNaN(data.total_score)) {
+          console.warn('API skoru geçersiz:', data.total_score);
+        }
+        setFinancialScore(data.total_score);
+      } catch (error) {
+        console.error('Skor alınamadı:', error);
+      }
+    };
+    fetchScore();
+  }, []);
+
+  // Daily suggestion'ı backend'den çek
+  useEffect(() => {
+    const fetchSuggestion = async () => {
+      try {
+        const response = await fetch('http://localhost:8004/api/v1/mcp-client/daily-suggestion', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: '7f3c989b-221e-47c3-b502-903199b39ad4' })
+        });
+        if (!response.ok) throw new Error('API error');
+        const data = await response.json();
+        console.log('Daily suggestion response:', data);
+        // Varsayılan anahtar suggestion, yoksa logdan bakılır
+        setSuggestion(data.suggestion || '');
+      } catch (error) {
+        console.error('Daily suggestion alınamadı:', error);
+      }
+    };
+    fetchSuggestion();
+  }, []);
 
   const backgroundColor = useThemeColor({}, 'background');
 
@@ -27,10 +68,6 @@ export default function CampaignsScreen() {
     }
   };
 
-  const handleScoreChange = () => {
-    setFinancialScore(Math.floor(Math.random() * 1000) + 1);
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={[]}>
       <TopBar title="FinTree" />
@@ -43,9 +80,7 @@ export default function CampaignsScreen() {
 
         {/* Tree Progress - Center */}
         <View style={styles.progressSection}>
-          <TouchableOpacity onPress={handleScoreChange} style={styles.treeButton}>
-            <TreeProgress financialScore={financialScore} size={320} />
-          </TouchableOpacity>
+          <TreeProgress financialScore={financialScore} size={320} />
         </View>
 
         {/* Campaign Card - Bottom */}
@@ -53,6 +88,7 @@ export default function CampaignsScreen() {
           <CampaignCard
             onCancel={() => Alert.alert('Geri', 'info')}
             onConfirm={() => Alert.alert('Tamam', 'info')}
+            description={suggestion || 'Öneri yükleniyor...'}
           />
         </View>
       </ScrollView>
@@ -65,7 +101,6 @@ export default function CampaignsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
   },
   scrollView: {
     flex: 1,
@@ -78,9 +113,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  treeButton: {
-    alignItems: 'center',
-  },
   profileSection: {
     paddingBottom: 20,
   },
@@ -88,4 +120,4 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 20,
   },
-});
+}); 
