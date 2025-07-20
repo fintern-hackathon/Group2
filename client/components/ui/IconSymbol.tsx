@@ -19,6 +19,8 @@ const MAPPING = {
   'chevron.left.forwardslash.chevron.right': 'code',
   'chevron.right': 'chevron-right',
   'refresh': 'refresh',
+  'calendar': 'calendar-today',
+  'sync': 'sync',
 } as const;
 
 /**

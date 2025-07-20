@@ -96,6 +96,7 @@ export default function IndexScreen() {
           <View style={styles.monthDropdownWrap}>
             <View>
               <TouchableOpacity style={styles.monthDropdown} onPress={() => setShowMonthDropdown(!showMonthDropdown)}>
+                <IconSymbol name="calendar" size={18} color="#0057B8" style={{ marginRight: 4 }} />
                 <ThemedText style={styles.monthDropdownText}>
                   {selectedMonth}
                 </ThemedText>
@@ -110,7 +111,7 @@ export default function IndexScreen() {
               )}
             </View>
             <TouchableOpacity style={styles.refreshBtn} onPress={handleRefresh}>
-              <IconSymbol name="refresh" size={22} color={isRefreshing ? '#86C443' : '#0057B8'} />
+              <IconSymbol name="sync" size={22} color={'#0000'} />
             </TouchableOpacity>
           </View>
         </View>
@@ -212,17 +213,21 @@ const styles = StyleSheet.create({
   refreshBtn: {
     marginLeft: 4,
     padding: 6,
-    borderRadius: 20,
-    backgroundColor: '#F2F6FA',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#B0B0B0',
+    backgroundColor: '#Fff',
   },
   badgeWrap: {
     alignSelf: 'center',
     marginTop: 8,
     marginBottom: 8,
-    backgroundColor: '#F2F6FA',
+    backgroundColor: '#F9F9F9',
     borderRadius: 12,
     paddingHorizontal: 18,
     paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: '#DEE2E6',
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowRadius: 4,
