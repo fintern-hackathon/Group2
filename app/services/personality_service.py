@@ -38,7 +38,7 @@ class PersonalityService:
                 }
             },
             'ozgur_kelebegi': {
-                'name': '🦋 Özgür Kelebeği',
+                'name': '🦋 Özgür Kelebek',
                 'description': 'Spontan, keyifli, anlık harcama kararları',
                 'traits': {
                     'high_entertainment': {'min': 0.15, 'weight': 0.3},

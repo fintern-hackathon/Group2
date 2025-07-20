@@ -44,7 +44,7 @@ class MCPResponse(BaseModel):
 
 # MCP Configuration
 MCP_BASE_URL = "http://192.168.1.16:8006/api/v1/mcp"
-GEMINI_API_KEY = "AIzaSyBCVWLlpVhDyY6LJ2ysYCBbxqfZkQoOSlQ"
+GEMINI_API_KEY = "AIzaSyA5uWgtk7rejkcY5FFXITOweB_zRhJaxEY"
 
 # Gemini AI Function Definitions (DOĞRU FORMAT)
 def create_mcp_functions():
@@ -309,13 +309,14 @@ class MCPClient:
 === YAZIM KURALLARI ===
 ✅ Doğrudan kullanıcıya hitap et ("Sen", "Siz")
 ✅ FinTree uygulamasından bahset
-✅ Kısa ve öz (20-30 kelime ideal)
+✅ Kısa ve öz (20-30 kelime ideal). 30 kelimeyi asla aşmasın.
 ✅ Mobil ekranda rahat okunabilir
 ✅ Motivasyonel ve pozitif ton
 ✅ Spesifik sayısal öneriler ver
 ✅ Eylem odaklı tavsiyelerde bulun
-❌ Personality isimleriyle (Cesur Aslan, Bilge Baykuş gibi) hitap etme
+❌ Personality isimleriyle (Cesur Aslan, Bilge Baykuş gibi) veya başka bir hitap şekliyle asla hitap etme
 ❌ Harcamaları artırmaya teşvik eden öneriler verme
+❌ Merhaba gibi ifadeleri kullanma
 
 === ÇIKTI FORMATI ===
 Sadece öneri metnini yaz. Başlık, açıklama vs. yok.

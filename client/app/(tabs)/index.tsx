@@ -35,7 +35,7 @@ export default function IndexScreen() {
   // Skoru backend'den çek
   const fetchScore = async () => {
     try {
-      const response = await fetch('http://192.168.1.16:8006/api/v1/analytics/7f3c989b-221e-47c3-b502-903199b39ad4/score');
+      const response = await fetch('http://192.168.1.16:8006/api/v1/analytics/866a6327-773a-4777-a60a-cf45b90f0851/score');
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       console.log('Score API response:', data);
@@ -61,7 +61,7 @@ export default function IndexScreen() {
       const response = await fetch('http://192.168.1.16:8006/api/v1/mcp-client/daily-suggestion', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: '7f3c989b-221e-47c3-b502-903199b39ad4' })
+        body: JSON.stringify({ user_id: '866a6327-773a-4777-a60a-cf45b90f0851' })
       });
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
@@ -82,7 +82,7 @@ export default function IndexScreen() {
   // Personality verisini backend'den çek
   const fetchPersonality = async () => {
     try {
-      const response = await fetch('http://192.168.1.16:8006/api/v1/personality/7f3c989b-221e-47c3-b502-903199b39ad4');
+      const response = await fetch('http://192.168.1.16:8006/api/v1/personality/866a6327-773a-4777-a60a-cf45b90f0851');
       if (!response.ok) throw new Error('API error');
       const data = await response.json();
       console.log('Personality response:', data);
@@ -95,7 +95,7 @@ export default function IndexScreen() {
         const personalityMap = {
           'cesur_aslan': { emoji: '🦁', name: 'Cesur Aslan' },
           'caliskan_sincap': { emoji: '🐿️', name: 'Çalışkan Sincap' },
-          'ozgur_kelebegi': { emoji: '🦋', name: 'Özgür Kelebeği' },
+          'ozgur_kelebegi': { emoji: '🦋', name: 'Özgür Kelebek' },
           'sabit_kaplumbaga': { emoji: '🐢', name: 'Sabit Kaplumbağa' },
           'konfor_koala': { emoji: '🐨', name: 'Konfor Koala' },
           'akilli_baykus': { emoji: '🦉', name: 'Akıllı Baykuş' }
