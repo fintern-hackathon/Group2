@@ -5,6 +5,7 @@
 - [Kurulum ve Çalıştırma](#kurulum-ve-çalıştırma)  
 - [Transactions API](#transactions-api)
 - [Analytics API](#analytics-api)
+- [MCP AI System](#mcp-ai-system)
 - [Uygulamayı Kaldırma](#uygulamayı-kaldırma)
 
 ---
@@ -238,6 +239,203 @@ curl -X GET "http://localhost:8002/api/v1/analytics/user123/monthly/2024/1"
   "detail": "No data found for the specified month"
 }
 ```
+
+---
+
+## 🤖 MCP AI System
+
+**MCP (Model Context Protocol) AI System**, AI ile database arasında köprü görevi gören gelişmiş yapıdır. Prompt dosyasından özel prompt'lar okur, Gemini AI'ya gönderir ve sonuçları database'e kaydeder.
+
+### 🏗️ MCP AI Mimarisi
+
+```
+Frontend → MCP AI Endpoint → Prompt File → Gemini AI → Database → Frontend
+```
+
+### 📁 Prompt Sistemi
+
+MCP AI, `prompts/ai_prompt.txt` dosyasından prompt template'ini okur:
+
+```txt
+prompts/
+  └── ai_prompt.txt  # Özel AI prompt template'i
+```
+
+### 🛠️ MCP AI Endpoints
+
+**Base URL**: `/api/v1/mcp-ai`
+
+#### 🤖 AI Öneri Üretme
+
+**Endpoint**: `POST /mcp-ai/{user_id}/generate`
+
+**Açıklama**: MCP üzerinden AI öneri üretir
+1. `prompts/ai_prompt.txt` dosyasından prompt okur
+2. Kullanıcı verilerini hazırlar
+3. Gemini AI'ya istek gönderir
+4. Sonucu database'e kaydeder
+
+#### 📝 Request Parameters
+```json
+{
+  "force_regenerate": false  // Optional: Aynı gün için yeniden üret
+}
+```
+
+#### 📊 Response Model - MCPAIResponse
+```json
+{
+  "success": true,
+  "suggestion_id": "uuid-string",
+  "suggestion_text": "AI önerisi metni...",
+  "generated_at": "2024-01-15T14:30:00",
+  "mcp_status": "processed",
+  "error": null
+}
+```
+
+#### 📋 AI Önerilerini Getirme
+
+**Endpoint**: `GET /mcp-ai/{user_id}/suggestions`
+
+**Açıklama**: Kullanıcının AI önerilerini listeler
+
+#### 📊 Response Model - SuggestionsResponse
+```json
+{
+  "suggestions": [
+    {
+      "id": "uuid-string",
+      "text": "AI öneri metni...",
+      "date": "2024-01-15",
+      "created_at": "2024-01-15T14:30:00",
+      "is_read": false
+    }
+  ],
+  "total_count": 5,
+  "mcp_status": "success"
+}
+```
+
+### 🔧 MCP Utility Endpoints
+
+#### 🏥 MCP Health Check
+
+**Endpoint**: `GET /mcp-ai/health`
+
+**Açıklama**: MCP AI sisteminin sağlık durumunu kontrol eder
+
+#### 📊 Response
+```json
+{
+  "status": "healthy",
+  "gemini_api_configured": true,
+  "prompt_file_exists": true,
+  "mcp_ready": true,
+  "service": "mcp_ai_service"
+}
+```
+
+#### 📄 Prompt Durumu
+
+**Endpoint**: `GET /mcp-ai/prompt/status`
+
+**Açıklama**: Prompt dosyasının varlığını ve durumunu kontrol eder
+
+#### 📊 Response
+```json
+{
+  "exists": true,
+  "file_path": "prompts/ai_prompt.txt",
+  "content_length": 456,
+  "has_content": true,
+  "mcp_status": "ready"
+}
+```
+
+#### 📝 Varsayılan Prompt Oluştur
+
+**Endpoint**: `POST /mcp-ai/prompt/create`
+
+**Açıklama**: Varsayılan prompt dosyasını oluşturur
+
+### 🎯 MCP AI Kullanım Örneği
+
+```bash
+# 1. MCP Health Check
+curl http://localhost:8002/api/v1/mcp-ai/health
+
+# 2. Prompt Durumu Kontrol
+curl http://localhost:8002/api/v1/mcp-ai/prompt/status
+
+# 3. AI Öneri Üret
+curl -X POST http://localhost:8002/api/v1/mcp-ai/11111111-1111-1111-1111-111111111111/generate
+
+# 4. Önerileri Getir
+curl http://localhost:8002/api/v1/mcp-ai/11111111-1111-1111-1111-111111111111/suggestions
+```
+
+### 🧪 MCP AI Test
+
+```bash
+python test_mcp_ai.py
+```
+
+Bu test:
+- ✅ MCP AI health durumunu kontrol eder
+- ✅ Prompt dosyası varlığını test eder
+- ✅ AI öneri üretimini test eder
+- ✅ Öneri listelemeyi test eder
+
+### 🔑 MCP Konfigürasyonu
+
+```env
+# .env dosyasında
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+### 📝 Custom Prompt Template
+
+`prompts/ai_prompt.txt` dosyasını düzenleyerek AI'nın nasıl yanıt vereceğini özelleştirebilirsiniz:
+
+```txt
+Sen bir finansal danışman asistanısın...
+
+=== KULLANICI VERİLERİ ===
+- Toplam Skor: {total_score}/100
+- Ağaç Seviyesi: {tree_level}/10
+- Sistemde: {days_in_system} gün
+- Tasarruf Oranı: %{savings_rate:.1f}
+- Aylık Ortalama Gelir: {avg_monthly_income:.0f} TL
+
+=== SON HARCAMA DETAYLARI ===
+{spending_summary}
+
+=== GÖREVIN ===
+1. Durumu değerlendir
+2. Pratik tavsiye ver
+3. Emoji ile durumu göster
+4. Motivasyonel ol
+```
+
+### 🌊 MCP Integration Flow
+
+1. **Frontend Request** → `/mcp-ai/{user_id}/generate`
+2. **Prompt Read** → `prompts/ai_prompt.txt` okunur
+3. **Data Preparation** → Kullanıcı verileri hazırlanır
+4. **AI Request** → Gemini AI'ya formatted prompt gönderilir
+5. **Database Save** → AI yanıtı database'e kaydedilir
+6. **Response** → Frontend'e sonuç döner
+
+### 🔄 MCP vs Normal AI
+
+| Özellik | Normal AI | MCP AI |
+|---------|-----------|--------|
+| **Prompt Source** | Hardcoded | External File |
+| **Customization** | Code Change | File Edit |
+| **Scalability** | Limited | High |
+| **MCP Ready** | ❌ | ✅ |
+| **Hot Reload** | ❌ | ✅ |
 
 ---
 

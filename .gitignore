@@ -153,4 +153,9 @@ simple_main.py
 # fintree.db - This file should be tracked for development
 
 # Log files
-*.log 
+*.log
+
+# MCP AI System
+# Keep prompts directory but allow user custom prompts
+!prompts/
+prompts/*.backup

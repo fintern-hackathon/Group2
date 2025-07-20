@@ -4,6 +4,7 @@ from app.routers.auth import router as auth_router
 from app.routers.transactions import router as transactions_router
 from app.routers.analytics import router as analytics_router
 from app.routers.ai import router as ai_router
+from app.routers.mcp_ai import router as mcp_ai_router
 from app.database.connection import init_db
 
 # Create FastAPI app
@@ -32,6 +33,7 @@ app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(transactions_router, prefix="/api/v1/transactions", tags=["transactions"])
 app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["analytics"])
 app.include_router(ai_router, prefix="/api/v1/ai", tags=["ai"])
+app.include_router(mcp_ai_router, prefix="/api/v1/mcp-ai", tags=["mcp-ai"])
 
 # Startup event
 @app.on_event("startup")
