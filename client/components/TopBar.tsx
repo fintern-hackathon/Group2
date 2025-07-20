@@ -16,13 +16,18 @@ export function TopBar({ title, showBackButton = false, onBackPress }: TopBarPro
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: primaryColor }]} edges={[]}>
       <StatusBar barStyle="light-content" backgroundColor={primaryColor} />
-      <View style={[styles.topBar, { backgroundColor: primaryColor }]}>
+      
+      {/* Dynamic Island area - invisible spacer */}
+      <View style={styles.dynamicIslandSpace} />
+      
+      {/* Title bar */}
+      <View style={[styles.titleBar, { backgroundColor: primaryColor }]}>
         {showBackButton && (
           <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
             <ThemedText style={styles.backButtonText}>←</ThemedText>
           </TouchableOpacity>
         )}
-        <ThemedText style={styles.title}>{title}</ThemedText>
+        {title && <ThemedText style={styles.title}>{title}</ThemedText>}
       </View>
     </SafeAreaView>
   );
@@ -32,12 +37,15 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
   },
-  topBar: {
+  dynamicIslandSpace: {
+    height: 50, // Dynamic Island alanı için boşluk
+  },
+  titleBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    minHeight: 94,
+    paddingVertical: 12,
+    minHeight: 44,
   },
   backButton: {
     position: 'absolute',

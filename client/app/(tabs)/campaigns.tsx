@@ -33,7 +33,7 @@ export default function CampaignsScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={[]}>
-      <TopBar title="" />
+      <TopBar title="FinTree" />
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* Profile Header - Top */}
@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileSection: {
-    paddingHorizontal: 16,
     paddingBottom: 20,
   },
   campaignSection: {
