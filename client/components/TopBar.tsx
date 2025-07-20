@@ -1,6 +1,6 @@
 import { useThemeColor } from '@/hooks/useThemeColor';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from './ThemedText';
 
@@ -14,7 +14,8 @@ export function TopBar({ title, showBackButton = false, onBackPress }: TopBarPro
   const primaryColor = useThemeColor({}, 'primary');
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: primaryColor }]} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: primaryColor }]} edges={[]}>
+      <StatusBar barStyle="light-content" backgroundColor={primaryColor} />
       <View style={[styles.topBar, { backgroundColor: primaryColor }]}>
         {showBackButton && (
           <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
@@ -35,9 +36,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12, // Reduced height
-    minHeight: 44, // Reduced minimum height
+    paddingVertical: 12,
+    minHeight: 44,
   },
   backButton: {
     position: 'absolute',

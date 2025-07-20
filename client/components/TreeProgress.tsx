@@ -19,7 +19,7 @@ export function TreeProgress({
 }: TreeProgressProps) {
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
-  const treeSize = size * 0.5;
+  const treeSize = size * 0.6; // Increased tree size
 
   const progress = Math.min((financialScore / 1000) * 100, 100);
   
@@ -89,7 +89,7 @@ export function TreeProgress({
         />
       </View>
 
-      {/* Score */}
+      {/* Score - moved below tree */}
       {showScore && (
         <View style={styles.scoreContainer}>
           <ThemedText style={styles.scoreText}>{displayScore}</ThemedText>
@@ -114,17 +114,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   treeImage: {
-    width: '100%',
-    height: '100%',
+    width: '110%',
+    height: '110%',
   },
   scoreContainer: {
     position: 'absolute',
-    bottom: -60,
     alignItems: 'center',
+    marginBottom: -250,
   },
   scoreText: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#0057B8',
   },
 });

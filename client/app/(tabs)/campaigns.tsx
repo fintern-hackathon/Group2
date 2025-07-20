@@ -16,16 +16,14 @@ export default function CampaignsScreen() {
   const backgroundColor = useThemeColor({}, 'background');
 
   const tabs = [
-    { id: 'home', label: 'Ana Sayfa', icon: '🏠', isActive: activeTab === 'home' },
-    { id: 'transactions', label: 'İşlemler', icon: '☰', isActive: activeTab === 'transactions' },
-    { id: 'assets', label: 'Varlıklar/Borçlar', icon: '🔄', isActive: activeTab === 'assets' },
     { id: 'campaigns', label: 'Kampanyalar', icon: '🎁', isActive: activeTab === 'campaigns' },
+    { id: 'profile', label: 'Profil', icon: '👤', isActive: activeTab === 'profile' },
   ];
 
   const handleTabPress = (tabId: string) => {
     setActiveTab(tabId);
-    if (tabId === 'home') {
-      Alert.alert('Ana Sayfa', 'Ana sayfaya yönlendiriliyorsunuz...');
+    if (tabId === 'profile') {
+      Alert.alert('Profil', 'Profil sayfasına yönlendiriliyorsunuz...');
     }
   };
 
@@ -35,7 +33,7 @@ export default function CampaignsScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
-      <TopBar title="FinTree" showBackButton />
+      <TopBar title="" />
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* Profile Header - Top */}

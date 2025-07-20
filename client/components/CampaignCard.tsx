@@ -11,7 +11,7 @@ export function CampaignCard({ onConfirm, onCancel }: CampaignCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.contentRow}>
-        <View style={{ flex: 1 }}>
+        <View style={styles.textContainer}>
           <ThemedText style={styles.text}>
             Lorem ipsum dolor sit amet consectetur. Sedet pellentesque nisi at sed massa massa tellus ut mattis. Elementum viverra sagittis elementum.
           </ThemedText>
@@ -37,10 +37,9 @@ export function CampaignCard({ onConfirm, onCancel }: CampaignCardProps) {
 const styles = StyleSheet.create({
   card: {
     marginHorizontal: 16,
-    marginTop: 24,
+    marginTop: 16,
     backgroundColor: '#fff',
     borderRadius: 16,
-    padding: 16,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -48,22 +47,31 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   contentRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    position: 'relative',
+    padding: 12,
+    marginBottom: 8,
+  },
+  textContainer: {
+    flex: 1,
+    paddingRight: 60,
   },
   text: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#333',
-    marginRight: 12,
+    lineHeight: 16,
   },
   bunny: {
-    width: 50,
-    height: 50,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 65,
+    height: 65,
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingHorizontal: 12,
+    paddingBottom: 12,
   },
   cancel: {
     fontSize: 14,
