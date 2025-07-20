@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Path, Line, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Path, Text as SvgText } from 'react-native-svg';
 import { ThemedText } from './ThemedText';
 
 interface TreeProgressProps {
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    minHeight: 320, // İçerik az olunca tavşan taşmasın diye min yükseklik
   },
   svg: {
   },

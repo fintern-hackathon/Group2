@@ -46,8 +46,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 4,
+    minHeight:124
   },
   contentRow: {
+    height:100,
     position: 'relative',
     padding: 12,
     marginBottom: 8,
@@ -55,11 +57,15 @@ const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
     paddingRight: 60,
+    display:'flex',
+    height:'100%',
+    width:'100%'
   },
   text: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#333',
     lineHeight: 16,
+    fontWeight:'500'
   },
   bunny: {
     position: 'absolute',
