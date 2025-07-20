@@ -18,6 +18,8 @@ import logging
 import json
 
 from app.database.connection import get_db
+from app.mcp_server import mcp_server  # Internal call için ekle
+from app.services.personality_service import PersonalityService
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -40,7 +42,7 @@ class MCPResponse(BaseModel):
     error: Optional[str] = None
 
 # MCP Configuration
-MCP_BASE_URL = "http://localhost:8004/api/v1/mcp"
+MCP_BASE_URL = "http://localhost:8006/api/v1/mcp"
 GEMINI_API_KEY = "AIzaSyArjeMqTbWoFO8NVIFBOTlcQqE4LsTDbqk"
 
 # Gemini AI Function Definitions (DOĞRU FORMAT)
@@ -181,44 +183,34 @@ class MCPClient:
         - Emoji kullan ama abartma
         """
 
-    async def call_mcp_tool(self, tool_name: str, **kwargs) -> Dict[str, Any]:
-        """MCP Server'a tool çağrısı yap"""
+    async def call_mcp_tool(self, tool_name: str, db: AsyncSession, **kwargs) -> Dict[str, Any]:
+        """MCP Server'a tool çağrısı yap (internal call)"""
         try:
-            if tool_name == "save_ai_suggestion":
-                payload = {
-                    "user_id": kwargs.get("user_id"),
-                    "suggestion_text": kwargs.get("suggestion_text"),
-                    "user_score_at_time": kwargs.get("user_score_at_time")
-                }
-                url = f"{MCP_BASE_URL}/save_ai_suggestion"
+            # Internal call mapping
+            if tool_name == "get_user_score":
+                result = await mcp_server.get_user_score(db, kwargs.get("user_id"))
+            elif tool_name == "get_user_financial_data":
+                result = await mcp_server.get_user_financial_data(db, kwargs.get("user_id"))
+            elif tool_name == "get_recent_transactions":
+                result = await mcp_server.get_recent_transactions(db, kwargs.get("user_id"), kwargs.get("days", 30))
+            elif tool_name == "get_spending_analysis":
+                result = await mcp_server.get_spending_analysis(db, kwargs.get("user_id"), kwargs.get("days", 30))
+            elif tool_name == "save_ai_suggestion":
+                from app.mcp_server import MCPSuggestionSave
+                suggestion_data = MCPSuggestionSave(
+                    user_id=kwargs.get("user_id"),
+                    suggestion_text=kwargs.get("suggestion_text"),
+                    user_score_at_time=kwargs.get("user_score_at_time")
+                )
+                result = await mcp_server.save_ai_suggestion(db, suggestion_data)
             else:
-                payload = {
-                    "user_id": kwargs.get("user_id"),
-                    "parameters": {k: v for k, v in kwargs.items() if k != "user_id"}
-                }
-                url = f"{MCP_BASE_URL}/{tool_name}"
-            
-            logger.info(f"🔧 MCP Tool Call: {tool_name} → {url}")
-            logger.debug(f"📤 Payload: {payload}")
-            
-            response = requests.post(url, json=payload, timeout=15)
-            
-            if response.status_code == 200:
-                result = response.json()
-                success = result.get('success', False)
-                logger.info(f"✅ MCP Tool Response: {tool_name} → {success}")
-                if not success:
-                    logger.warning(f"⚠️ Tool failed: {result.get('error', 'Unknown')}")
-                return result
-            else:
-                logger.error(f"❌ MCP Tool HTTP Error: {tool_name} → {response.status_code}")
-                return {"success": False, "error": f"HTTP {response.status_code}"}
-                
+                return {"success": False, "error": f"Tool {tool_name} not implemented"}
+            # MCPToolResponse tipinde döner, dict'e çevir
+            return result.dict() if hasattr(result, 'dict') else dict(result)
         except Exception as e:
-            logger.error(f"❌ MCP Tool Exception: {tool_name} → {e}")
             return {"success": False, "error": str(e)}
 
-    async def process_mcp_request(self, user_id: str) -> Dict[str, Any]:
+    async def process_mcp_request(self, user_id: str, db: AsyncSession) -> Dict[str, Any]:
         """
         MCP Protocol Ana Akışı - FIXED VERSION
         AI çalışmazsa HATA döner, fake response YOK!
@@ -232,6 +224,36 @@ class MCPClient:
             
             logger.info(f"📝 STEP 2: Auto Query Generated: {auto_query}")
             
+            # STEP 2.5: Personality verisini çek
+            personality_service = PersonalityService()
+            personality_result = await personality_service.get_user_personality(db, user_id)
+            personality_block = ""
+            if personality_result.get('success') and personality_result['data']:
+                pdata = personality_result['data']
+                personality_block = f"""
+=== KULLANICI KİŞİLİK PROFİLİ ===\n{pdata.get('personality_name', '')} (Güven: {pdata.get('confidence_score', 0):.2f})\nAçıklama: {pdata.get('description', '')}\n"""
+                # AI context varsa ekle
+                if pdata.get('ai_context'):
+                    personality_block += f"{pdata['ai_context']}\n"
+                # Öne çıkan traitleri ekle (isteğe bağlı)
+                traits = pdata.get('traits', {})
+                if traits:
+                    # traits_json: personality tiplerine göre AI'nın kullandığı skorlar ve öne çıkan özelliklerdir.
+                    personality_block += "Aşağıda kullanıcının kişilik analizine göre öne çıkan trait skorları (0-1 arası) yer almaktadır.\n"
+                    trait_lines = []
+                    for t_name, t_val in traits.items():
+                        if isinstance(t_val, dict) and 'total_score' in t_val:
+                            score = t_val['total_score']
+                            trait_lines.append(f"- {t_val.get('name', t_name)}: {score:.2f}")
+                        elif isinstance(t_val, (float, int)):
+                            trait_lines.append(f"- {t_name}: {t_val:.2f}")
+                    if trait_lines:
+                        personality_block += "\n".join(trait_lines) + "\n"
+                    personality_block += "Bilge Baykuş tipi kullanıcı, planlı hareket eder, uzun vadeli düşünür. Harcamalarında genellikle düzenli bir tasarruf modeli izler, riskten kaçar ve genellikle faturalar ile gıda gibi temel ihtiyaçlara odaklanır.Meşgul Sincap tipi kullanıcı, aşırı derecede tasarruf yapar ancak keyif almayı ihmal eder. Gelirinin %40’ından fazlasını biriktirir ve eğlence ya da giyim gibi alanlara çok az harcama yapar.Özgür Kelebek tipi kullanıcı, anlık kararlar alır, spontane yaşar ve hayatın tadını çıkarmayı sever. Eğlence harcamaları yüksektir ve harcama davranışları değişkendir.Sabit Kaplumbağa tipi kullanıcı, düzenli ve tutarlıdır. Harcama kalıplarında çok az değişkenlik görülür ve genellikle aynı miktarlarda harcama yapar. Değişikliklerden hoşlanmaz.Cesur Aslan tipi kullanıcı, risk almayı sever, büyük harcamalar yapar ve finansal hedeflere odaklanır. Harcamalarında büyük dalgalanmalar olabilir.Konfor Koala tipi kullanıcı, yaşam kalitesine önem verir ve rahatlığı ön planda tutar. Gıda, sağlık ve eğlence gibi alanlarda yüksek harcama eğilimindedir.Bu trait skorları, kullanıcının harcama alışkanlıklarından çıkarılan kişilik özelliklerini ve finansal davranışlarını yansıtır.\n"
+            else:
+                personality_block = ""
+
+            logger.info(f"🔧 STEP 3: Personality Block: {personality_block}")
             # STEP 3: Veri toplama (AI olmadan)
             logger.info("🔧 STEP 3: Collecting user data from MCP tools...")
             
@@ -248,7 +270,7 @@ class MCPClient:
             for tool_name, params in data_collection_tools:
                 try:
                     logger.info(f"🔧 Calling {tool_name}...")
-                    result = await self.call_mcp_tool(tool_name, user_id=user_id, **params)
+                    result = await self.call_mcp_tool(tool_name, db, user_id=user_id, **params)
                     
                     if result.get('success'):
                         collected_data[tool_name] = result.get('data', {})
@@ -275,30 +297,8 @@ class MCPClient:
             
             # MOBİL BANKACILIK UYGULAMASI PROMPT
             enhanced_prompt = f"""
-            Sen FinTree mobil bankacılık uygulamasının AI asistanısın. 📱🌳
-            
-            Kullanıcı uygulamayı açtığında göreceği GÜNLÜK ÖNERİ yazısı hazırla.
-            
-            === VERİ ANALİZİ (Son 30 gün odaklı) ===
-            {json.dumps(collected_data, indent=2, ensure_ascii=False)}
-            
-            === YAZIM KURALLARI ===
-            ✅ Doğrudan kullanıcıya hitap et ("Sen", "Siz")
-            ✅ FinTree uygulamasından bahset
-            ✅ Kısa ve öz (20-30 kelime ideal)
-            ✅ Mobil ekranda rahat okunabilir
-            ✅ Motivasyonel ve pozitif ton
-            ✅ Spesifik sayısal öneriler ver
-            ✅ Eylem odaklı tavsiyelerde bulun
-            
-            === ÇIKTI FORMATI ===
-            Sadece öneri metnini yaz. Başlık, açıklama vs yok.
-            Örnek: "Bu ay kahve harcaman %15 arttı! ☕ Günde 2 kahve yerine 1 içersen aylık 180₺ tasarruf edebilirsin. 💰"
-            
-            === SON 30 GÜNÜN ÖZETİ VER ===
-            Kullanıcının gerçek verilerine göre spesifik, kişisel ve actionable öneri üret! 🎯
-            """
-            
+            Sen FinTree mobil bankacılık uygulamasının AI asistanısın. 📱🌳\n\n{personality_block}\n=== VERİ ANALİZİ (Son 30 gün odaklı) ===\n{json.dumps(collected_data, indent=2, ensure_ascii=False)}\n\n=== YAZIM KURALLARI ===\n✅ Doğrudan kullanıcıya hitap et (\"Sen\", \"Siz\")\n✅ FinTree uygulamasından bahset\n✅ Kısa ve öz (20-30 kelime ideal)\n✅ Mobil ekranda rahat okunabilir\n✅ Motivasyonel ve pozitif ton\n✅ Spesifik sayısal öneriler ver\n✅ Eylem odaklı tavsiyelerde bulun\n\n=== ÇIKTI FORMATI ===\nSadece öneri metnini yaz. Başlık, açıklama vs yok.\nÖrnek: \"Bu ay kahve harcaman %15 arttı! ☕ Günde 2 kahve yerine 1 içersen aylık 180₺ tasarruf edebilirsin. 💰\"\n\n=== SON 30 GÜNÜN ÖZETİ VER ===\nKullanıcının gerçek verilerine ve kişilik profiline göre spesifik, kişisel ve actionable öneri üret! 🎯\n Son 30 gün veya merhaba gibi ifadeler kullanma çünkü bu bir günlük tavsiye alanıdır.  \n          """
+            logger.info(f"🔧 STEP 6: Enhanced Prompt: {enhanced_prompt}")
             try:
                 logger.info("⏳ STEP 6: Rate limiting...")
                 time.sleep(2)
@@ -346,6 +346,7 @@ class MCPClient:
             try:
                 save_result = await self.call_mcp_tool(
                     "save_ai_suggestion",
+                    db,
                     user_id=user_id,
                     suggestion_text=suggestion_text[:1000],
                     user_score_at_time=user_score
@@ -404,7 +405,7 @@ async def get_daily_suggestion(
         print(f"🌳 FinTree MCP Request: {request.user_id}")
         
         # MCP Protocol Full Flow
-        mcp_result = await mcp_client.process_mcp_request(user_id=request.user_id)
+        mcp_result = await mcp_client.process_mcp_request(user_id=request.user_id, db=db)
         
         if mcp_result.get("success"):
             return MCPResponse(

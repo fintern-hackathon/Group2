@@ -226,14 +226,24 @@ class MCPServer:
                 tool_name="get_recent_transactions"
             )
 
-    async def get_spending_analysis(self, db: AsyncSession, user_id: str) -> MCPToolResponse:
+    async def get_spending_analysis(self, db: AsyncSession, user_id: str, days: int = None) -> MCPToolResponse:
         """Tool: Detaylı harcama analizi"""
         try:
-            # Get all transactions
-            result = await db.execute(
-                select(DailyTransaction).where(DailyTransaction.user_id == user_id)
-                .order_by(desc(DailyTransaction.date))
-            )
+            # Get transactions (son X gün veya tümü)
+            if days:
+                days_ago = datetime.now().date() - timedelta(days=days)
+                result = await db.execute(
+                    select(DailyTransaction)
+                    .where(DailyTransaction.user_id == user_id)
+                    .where(DailyTransaction.date >= days_ago)
+                    .order_by(desc(DailyTransaction.date))
+                )
+            else:
+                result = await db.execute(
+                    select(DailyTransaction)
+                    .where(DailyTransaction.user_id == user_id)
+                    .order_by(desc(DailyTransaction.date))
+                )
             transactions = result.scalars().all()
             
             if not transactions:

@@ -426,7 +426,7 @@ class AdvancedScoreService:
             user_total = UserTotal(user_id=user_id)
             db.add(user_total)
         
-                 user_total.total_score = float(score)
+        user_total.total_score = float(score)
         user_total.tree_level = int(tree_level)
         user_total.total_income = float(user_data['total_income'])
         user_total.total_expenses = float(user_data['total_expenses'])

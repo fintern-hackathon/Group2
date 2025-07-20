@@ -5,6 +5,7 @@ from app.routers.transactions import router as transactions_router
 from app.routers.analytics import router as analytics_router
 from app.routers.mcp_tools import router as mcp_tools_router
 from app.routers.mcp_client import router as mcp_client_router
+from app.routers.personality import router as personality_router
 from app.database.connection import init_db
 
 # Create FastAPI app
@@ -34,6 +35,7 @@ app.include_router(transactions_router, prefix="/api/v1/transactions", tags=["tr
 app.include_router(analytics_router, prefix="/api/v1/analytics", tags=["analytics"])
 app.include_router(mcp_tools_router, prefix="/api/v1/mcp", tags=["mcp-tools"])
 app.include_router(mcp_client_router, prefix="/api/v1/mcp-client", tags=["mcp-client"])
+app.include_router(personality_router, tags=["personality"])  # NEW: Financial DNA
 
 # Startup event
 @app.on_event("startup")
