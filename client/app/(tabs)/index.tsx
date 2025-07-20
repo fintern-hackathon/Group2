@@ -131,7 +131,7 @@ export default function IndexScreen() {
   const backgroundColor = useThemeColor({}, 'background');
 
   const tabs = [
-    { id: 'campaigns', label: 'Kampanyalar', icon: '🎁', isActive: activeTab === 'campaigns' },
+    { id: 'campaigns', label: 'A', icon: '🎁', isActive: activeTab === 'campaigns' },
     { id: 'profile', label: 'Profil', icon: '👤', isActive: activeTab === 'profile' },
   ];
 
