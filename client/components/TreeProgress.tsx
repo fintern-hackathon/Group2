@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import Svg, { Circle, Path, Text as SvgText } from 'react-native-svg';
 import { ThemedText } from './ThemedText';
 
 interface TreeProgressProps {
@@ -19,9 +19,9 @@ export function TreeProgress({
 }: TreeProgressProps) {
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
-  const treeSize = size * 0.6; // Increased tree size
+  const treeSize = size * 0.6;
 
-  const progress = Math.min((financialScore / 1000) * 100, 100);
+  const progress = Math.min(financialScore, 100);
   
   // Calculate 270-degree arc (from +135° to +405°) - gap centered at bottom
   const startAngle = 135;  // Start at +135 degrees (top-left)
@@ -30,54 +30,80 @@ export function TreeProgress({
   
   // Calculate the current angle based on progress
   const currentAngle = startAngle + (progress / 100) * totalAngle;
-
+  
+  // Convert angles to radians
   const startRad = (startAngle * Math.PI) / 180;
   const currentRad = (currentAngle * Math.PI) / 180;
-
-  const x1 = center + radius * Math.cos(startRad);
-  const y1 = center + radius * Math.sin(startRad);
-  const x2 = center + radius * Math.cos(currentRad);
-  const y2 = center + radius * Math.sin(currentRad);
-
-  // Create a more rounded arc path
-  const arcPath = progress > 0
-    ? `M ${x1} ${y1} A ${radius} ${radius} 0 ${progress > 50 ? 1 : 0} 1 ${x2} ${y2}`
-    : '';
+  
+  // Calculate dot position
+  const dotX = center + radius * Math.cos(currentRad);
+  const dotY = center + radius * Math.sin(currentRad);
 
   const displayScore = `%${Math.round(progress)}`;
 
   const getTreeImage = (score: number) => {
-    if (score >= 800) return require('@/assets/images/tree6.png');
-    if (score >= 600) return require('@/assets/images/tree5.png');
-    if (score >= 400) return require('@/assets/images/tree3.png');
+    if (score >= 80) return require('@/assets/images/tree6.png');
+    if (score >= 60) return require('@/assets/images/tree5.png');
+    if (score >= 40) return require('@/assets/images/tree4.png');
+    if (score >= 20) return require('@/assets/images/tree3.png');
     return require('@/assets/images/tree1.png');
   };
+
+  // Arka yay rengi: %40 ve altı için saydam kırmızı, üstü için saydam yeşil
+  const backgroundArcColor = progress <= 40 ? 'rgba(229,57,53,0.18)' : 'rgba(134,196,67,0.18)';
+  const progressColor = progress <= 40 ? '#E53935' : '#86C443';
+
+  // %0 ve %100 yazılarının pozisyonu (baş ve son noktalar)
+  const percentLabelOffset = 28; // yaydan biraz dışarıda dursun
+  const percent0X = center + (radius + percentLabelOffset) * Math.cos(startRad);
+  const percent0Y = center + (radius + percentLabelOffset) * Math.sin(startRad);
+  const percent100X = center + (radius + percentLabelOffset) * Math.cos((endAngle * Math.PI) / 180);
+  const percent100Y = center + (radius + percentLabelOffset) * Math.sin((endAngle * Math.PI) / 180);
 
   return (
     <View style={styles.container}>
       <Svg width={size} height={size} style={styles.svg}>
-        {/* Background arc */}
+        {/* Background arc - skora göre renkli */}
         <Path
           d={`M ${center + radius * Math.cos(startRad)} ${center + radius * Math.sin(startRad)} A ${radius} ${radius} 0 1 1 ${center + radius * Math.cos(endAngle * Math.PI / 180)} ${center + radius * Math.sin(endAngle * Math.PI / 180)}`}
-          stroke="#CDE8A3"
+          stroke={backgroundArcColor}
           strokeWidth={strokeWidth}
           fill="transparent"
           opacity={1}
           strokeLinecap="round"
-          strokeLinejoin="round"
         />
 
-        {/* Foreground arc */}
+        {/* Progress dot - sadece uçta yuvarlak */}
         {progress > 0 && (
-          <Path
-            d={arcPath}
-            stroke="#86C443"
-            strokeWidth={strokeWidth}
-            fill="transparent"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <Circle
+            cx={dotX}
+            cy={dotY}
+            r={strokeWidth / 2}
+            fill={progressColor}
           />
         )}
+
+        {/* %0 ve %100 yazıları */}
+        <SvgText
+          x={percent0X}
+          y={percent0Y + 8}
+          fontSize={18}
+          fontWeight="bold"
+          fill="#B0B0B0"
+          textAnchor="middle"
+        >
+          %0
+        </SvgText>
+        <SvgText
+          x={percent100X}
+          y={percent100Y + 8}
+          fontSize={18}
+          fontWeight="bold"
+          fill="#B0B0B0"
+          textAnchor="middle"
+        >
+          %100
+        </SvgText>
       </Svg>
 
       {/* Tree image */}
@@ -89,7 +115,7 @@ export function TreeProgress({
         />
       </View>
 
-      {/* Score - moved below tree */}
+      {/* Score */}
       {showScore && (
         <View style={styles.scoreContainer}>
           <ThemedText style={styles.scoreText}>{displayScore}</ThemedText>
@@ -104,9 +130,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    minHeight: 320, // İçerik az olunca tavşan taşmasın diye min yükseklik
   },
   svg: {
-    position: 'absolute',
   },
   treeContainer: {
     position: 'absolute',
@@ -115,16 +141,21 @@ const styles = StyleSheet.create({
   },
   treeImage: {
     width: '110%',
+    borderRadius: 100,
     height: '110%',
   },
   scoreContainer: {
     position: 'absolute',
+    bottom: -20,
     alignItems: 'center',
-    marginBottom: -250,
+    justifyContent: 'center',
+    paddingVertical: 10,
   },
   scoreText: {
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 32,
+    fontWeight: '700',
     color: '#0057B8',
+    textAlign: 'center',
+    lineHeight: 40,
   },
 });
