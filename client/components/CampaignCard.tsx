@@ -9,12 +9,14 @@ interface CampaignCardProps {
 }
 
 export function CampaignCard({ onConfirm, onCancel, description }: CampaignCardProps) {
+  console.log('CampaignCard received description:', description);
+  console.log('CampaignCard description type:', typeof description);
   return (
     <View style={styles.cardShadowWrap}>
       <View style={styles.card}>
         <View style={styles.contentRow}>
           <View style={styles.textContainer}>
-            <ThemedText style={styles.text}>
+            <ThemedText style={styles.text} numberOfLines={6}>
               {description || 'Lorem ipsum dolor sit amet consectetur. Sedet pellentesque nisi at sed massa massa tellus ut mattis. Elementum viverra sagittis elementum.'}
             </ThemedText>
           </View>
@@ -44,33 +46,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 16,
     overflow: 'hidden',
-    minHeight:124,
+    height: 160, // Daha da büyük yükseklik
     position: 'relative',
   },
   contentRow: {
-    minHeight: 0,
-    position: 'relative',
-    marginBottom: 0,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    height: '100%',
   },
   textContainer: {
-    padding:12,
+    padding: 12,
     flex: 1,
-    display:'flex',
-    height:'100%',
-    width:'100%'
+    justifyContent: 'flex-start', // Yukarıdan başla
+    paddingTop: 15, // Biraz aşağıdan başla ki sığsın
+    paddingRight: 80, // Tavşan için daha az yer bırak
   },
   text: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#333',
-    fontWeight:'500'
+    fontWeight: '500',
+    lineHeight: 18, // Satır yüksekliği
   },
   bunny: {
-    alignSelf: 'flex-end',
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
     width: 100,
     height: 100,
-    marginTop: 'auto',
     borderBottomRightRadius: 16,
-    marginBottom: -4, 
+    zIndex: -1, // Yazının arkasında kalacak
   },
   cancel: {
     fontSize: 14,

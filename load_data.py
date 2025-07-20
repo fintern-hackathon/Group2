@@ -188,7 +188,7 @@ async def main():
     
     print(f"\n🎉 Data loading completed!")
     print(f"📋 Test User ID: {TEST_USER_ID}")
-    print(f"🌐 Test with: http://localhost:8000/api/v1/analytics/{TEST_USER_ID}/score")
+    print(f"🌐 Test with: http://192.168.1.16:8006/api/v1/analytics/{TEST_USER_ID}/score")
 
 if __name__ == "__main__":
     asyncio.run(main()) 

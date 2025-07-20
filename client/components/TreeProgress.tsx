@@ -19,7 +19,7 @@ export function TreeProgress({
 }: TreeProgressProps) {
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
-  const treeSize = size * 0.6;
+  const treeSize = size * 0.75;
 
   const progress = Math.min(financialScore, 100);
   
@@ -42,11 +42,24 @@ export function TreeProgress({
   const displayScore = `%${Math.round(progress)}`;
 
   const getTreeImage = (score: number) => {
-    if (score >= 80) return require('@/assets/images/tree6.png');
-    if (score >= 60) return require('@/assets/images/tree5.png');
-    if (score >= 40) return require('@/assets/images/tree4.png');
-    if (score >= 20) return require('@/assets/images/tree3.png');
-    return require('@/assets/images/tree1.png');
+    // 0-100 arası skoru 1-10 arası ağaç indeksine çevir
+    const treeIndex = Math.min(Math.max(Math.ceil((score / 100) * 10), 1), 10);
+    
+    // Tüm ağaç fotoğraflarını önceden tanımla
+    const treeImages = {
+      1: require('@/assets/images/1.png'),
+      2: require('@/assets/images/2.png'),
+      3: require('@/assets/images/3.png'),
+      4: require('@/assets/images/4.png'),
+      5: require('@/assets/images/5.png'),
+      6: require('@/assets/images/6.png'),
+      7: require('@/assets/images/7.png'),
+      8: require('@/assets/images/8.png'),
+      9: require('@/assets/images/9.png'),
+      10: require('@/assets/images/10.png'),
+    };
+    
+    return treeImages[treeIndex as keyof typeof treeImages];
   };
 
   // Arka yay rengi: %40 ve altı için saydam kırmızı, üstü için saydam yeşil

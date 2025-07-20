@@ -35,6 +35,7 @@ class MCPRequest(BaseModel):
 class MCPResponse(BaseModel):
     success: bool
     suggestion_text: Optional[str] = None
+    suggestion: Optional[str] = None  # Frontend compatibility
     suggestion_id: Optional[str] = None
     user_score: Optional[float] = None
     tree_level: Optional[int] = None
@@ -42,8 +43,8 @@ class MCPResponse(BaseModel):
     error: Optional[str] = None
 
 # MCP Configuration
-MCP_BASE_URL = "http://localhost:8006/api/v1/mcp"
-GEMINI_API_KEY = "AIzaSyArjeMqTbWoFO8NVIFBOTlcQqE4LsTDbqk"
+MCP_BASE_URL = "http://192.168.1.16:8006/api/v1/mcp"
+GEMINI_API_KEY = "AIzaSyBCVWLlpVhDyY6LJ2ysYCBbxqfZkQoOSlQ"
 
 # Gemini AI Function Definitions (DOĞRU FORMAT)
 def create_mcp_functions():
@@ -297,7 +298,33 @@ class MCPClient:
             
             # MOBİL BANKACILIK UYGULAMASI PROMPT
             enhanced_prompt = f"""
-            Sen FinTree mobil bankacılık uygulamasının AI asistanısın. 📱🌳\n\n{personality_block}\n=== VERİ ANALİZİ (Son 30 gün odaklı) ===\n{json.dumps(collected_data, indent=2, ensure_ascii=False)}\n\n=== YAZIM KURALLARI ===\n✅ Doğrudan kullanıcıya hitap et (\"Sen\", \"Siz\")\n✅ FinTree uygulamasından bahset\n✅ Kısa ve öz (20-30 kelime ideal)\n✅ Mobil ekranda rahat okunabilir\n✅ Motivasyonel ve pozitif ton\n✅ Spesifik sayısal öneriler ver\n✅ Eylem odaklı tavsiyelerde bulun\n\n=== ÇIKTI FORMATI ===\nSadece öneri metnini yaz. Başlık, açıklama vs yok.\nÖrnek: \"Bu ay kahve harcaman %15 arttı! ☕ Günde 2 kahve yerine 1 içersen aylık 180₺ tasarruf edebilirsin. 💰\"\n\n=== SON 30 GÜNÜN ÖZETİ VER ===\nKullanıcının gerçek verilerine ve kişilik profiline göre spesifik, kişisel ve actionable öneri üret! 🎯\n Son 30 gün veya merhaba gibi ifadeler kullanma çünkü bu bir günlük tavsiye alanıdır.  \n          """
+            Sen FinTree mobil bankacılık uygulamasının AI asistanısın. 📱🌳
+
+=== KULLANICI KİŞİLİK PROFİLİ ===
+{personality_block}
+
+=== VERİ ANALİZİ (Son 30 gün odaklı) ===
+{json.dumps(collected_data, indent=2, ensure_ascii=False)}
+
+=== YAZIM KURALLARI ===
+✅ Doğrudan kullanıcıya hitap et ("Sen", "Siz")
+✅ FinTree uygulamasından bahset
+✅ Kısa ve öz (20-30 kelime ideal)
+✅ Mobil ekranda rahat okunabilir
+✅ Motivasyonel ve pozitif ton
+✅ Spesifik sayısal öneriler ver
+✅ Eylem odaklı tavsiyelerde bulun
+❌ Personality isimleriyle (Cesur Aslan, Bilge Baykuş gibi) hitap etme
+❌ Harcamaları artırmaya teşvik eden öneriler verme
+
+=== ÇIKTI FORMATI ===
+Sadece öneri metnini yaz. Başlık, açıklama vs. yok.
+Örnek: "Bu ay kahve harcaman %15 arttı! ☕ Günde 2 kahve yerine 1 içersen aylık 180₺ tasarruf edebilirsin. 💰"
+
+=== ÖZEL TALİMATLAR ===
+Kullanıcının gerçek finansal verilerine ve kişilik profiline göre kişisel, spesifik ve uygulanabilir öneriler ver! 🎯
+"Son 30 gün", "merhaba" veya kişilik isimleriyle (cesur aslan gibi) hitaplarda bulunma çünkü bu bir günlük tavsiye alanıdır.
+Harcamaları azaltmaya, tasarruf sağlamaya ya da mevcut bütçeyi daha verimli kullanmaya yönelik pozitif öneriler sun. ✨ """
             logger.info(f"🔧 STEP 6: Enhanced Prompt: {enhanced_prompt}")
             try:
                 logger.info("⏳ STEP 6: Rate limiting...")
@@ -408,9 +435,11 @@ async def get_daily_suggestion(
         mcp_result = await mcp_client.process_mcp_request(user_id=request.user_id, db=db)
         
         if mcp_result.get("success"):
+            suggestion_text = mcp_result.get("suggestion_text")
             return MCPResponse(
                 success=True,
-                suggestion_text=mcp_result.get("suggestion_text"),
+                suggestion_text=suggestion_text,
+                suggestion=suggestion_text,  # Frontend compatibility
                 user_score=mcp_result.get("user_score"),
                 tree_level=int(mcp_result.get("user_score", 0) // 10) if mcp_result.get("user_score") else 1,
                 mcp_flow_status=mcp_result.get("mcp_flow_status", "completed")

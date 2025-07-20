@@ -78,7 +78,7 @@ def setup_project():
     else:
         print("   venv/bin/python working_main.py")
     
-    print("\n📚 API Documentation: http://localhost:8002/docs")
+    print("\n📚 API Documentation: http://192.168.1.16:8006/docs")
     return True
 
 def remove_project():
