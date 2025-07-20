@@ -32,7 +32,7 @@ export default function CampaignsScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]} edges={[]}>
       <TopBar title="" />
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>

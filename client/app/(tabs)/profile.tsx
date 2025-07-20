@@ -10,7 +10,7 @@ export default function ProfileScreen() {
   const backgroundColor = useThemeColor({}, 'background');
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]} edges={['top']}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]} edges={[]}>
       <TopBar title="Profil" />
       
       <View style={styles.content}>

@@ -36,8 +36,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    minHeight: 44,
+    paddingVertical: 16,
+    minHeight: 94,
   },
   backButton: {
     position: 'absolute',
